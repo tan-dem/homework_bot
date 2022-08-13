@@ -36,21 +36,25 @@ HOMEWORK_STATUSES = {
 
 class CheckTokensError(Exception):
     """Если отсутствуют обязательные переменные окружения."""
+
     pass
 
 
 class APIResponseError(Exception):
     """Если API не возвращает ожидаемый ответ."""
+
     pass
 
 
 class APIHTTPStatusError(Exception):
     """Если API недоступен."""
+
     pass
 
 
 class SendMessageError(Exception):
     """Если сообщение в telegram не отправилось."""
+
     pass
 
 
@@ -126,7 +130,6 @@ def check_tokens():
 
 def main():
     """Основная логика работы бота."""
-
     latest_homework_status = {}
     latest_error_message = ''
 
