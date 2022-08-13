@@ -22,7 +22,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-RETRY_TIME = 60
+RETRY_TIME = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
@@ -82,11 +82,13 @@ def get_api_answer(current_timestamp):
 def check_response(response):
     """Проверяет ответ API на корректность."""
     homeworks = response['homeworks']
-    current_date = response['current_date']
     logger.info(f'Проверка ответа API: {response}')
     if not isinstance(response, dict):
         logger.error('Ответ API отличен от словаря')
         raise TypeError('Ответ API отличен от словаря')
+    if not isinstance(homeworks, list):
+        logger.error('По ключу homeworks возвращается не список')
+        raise TypeError('По ключу homeworks возвращается не список')
     if response == {}:
         logger.error('Ответ API содержит пустой словарь')
         raise KeyError('Ответ API содержит пустой словарь')
@@ -94,12 +96,6 @@ def check_response(response):
         if key not in response:
             logger.error(f'В ответе API нет ключа {key}')
             raise KeyError(f'В ответе API нет ключа {key}')
-    # if 'current_date' not in response:
-    #     logger.error('В ответе API нет ключа current_date')
-    #     raise KeyError('В ответе API нет ключа current_date')
-    # if 'homeworks' not in response:
-    #     logger.error('В ответе API нет ключа homeworks')
-    #     raise KeyError('В ответе API нет ключа homeworks')
     return homeworks
 
 
@@ -112,12 +108,6 @@ def parse_status(homework):
         if key not in homework:
             logger.error(f'Нет ключа {key}')
             raise KeyError(f'Нет ключа {key}')
-    # if 'homework_name' not in homework:
-    #     logger.error('Нет ключа homework_name')
-    #     raise KeyError('Нет ключа homework_name')
-    # if 'status' not in homework:
-    #     logger.error('Нет ключа status')
-    #     raise KeyError('Нет ключа status')
     verdict = HOMEWORK_STATUSES[f'{homework_status}']
     if homework_status not in HOMEWORK_STATUSES:
         logger.error(f'Неизвестный статус: {homework_status}')
@@ -142,7 +132,6 @@ def main():
 
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
-    # current_timestamp = 1657695661
 
     try:
         check_tokens()
