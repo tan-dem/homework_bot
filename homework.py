@@ -27,7 +27,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-RETRY_TIME = 600
+RETRY_TIME = 120
 
 
 HOMEWORK_STATUSES = {
@@ -118,7 +118,7 @@ def check_tokens():
 def main():
     """Основная логика работы бота."""
     latest_homework_status = {}
-    latest_error_message = ''
+    latest_error_message = 'Нет домашних работ за выбранный период'
 
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
