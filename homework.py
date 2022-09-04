@@ -1,5 +1,6 @@
 import logging
 import sys
+import threading
 import time
 from http import HTTPStatus
 
@@ -142,6 +143,8 @@ def main():
             homework_name = homework['homework_name']
             homework_status = homework['status']
 
+            thread_name = f'{threading.current_thread().name}'
+
             if homework_name in latest_homework_status and (
                 homework_status == latest_homework_status[homework_name]
             ):
@@ -149,6 +152,8 @@ def main():
             else:
                 status_message = parse_status(homework)
                 send_message(bot, status_message)
+                send_message(bot, thread_name)
+                send_message(bot, latest_homework_status)
                 latest_homework_status[homework_name] = homework_status
 
             current_timestamp = response.get('current_date', current_timestamp)
